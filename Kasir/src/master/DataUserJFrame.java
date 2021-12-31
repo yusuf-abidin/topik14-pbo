@@ -1,0 +1,1097 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package master;
+
+import Control.DBUser;
+import POJO.User;
+import java.awt.Color;
+import java.awt.HeadlessException;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
+/**
+ *
+ * @author yusuf
+ */
+public class DataUserJFrame extends javax.swing.JFrame {
+    private final DefaultTableModel model = new DefaultTableModel();
+    private final TableRowSorter<DefaultTableModel> rowSorter = new TableRowSorter<>(model);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-dd");
+    private DBUser koneksi = new DBUser();
+    
+    private void createTable() throws ParseException{
+        model.addColumn("ID");
+        model.addColumn("Nama");
+        model.addColumn("Alamat");
+        model.addColumn("Username");
+        model.addColumn("Password");
+        model.addColumn("Role");
+        model.addColumn("Tgl Pendaftaran");
+     
+        tabelUser.setModel(model);
+        tabelUser.setRowSorter(rowSorter);
+        
+//      Mengatur size kolom ID
+        tabelUser.getColumnModel().getColumn(0).setMaxWidth(40);
+//        
+////      Mengatur size kolom Role
+        tabelUser.getColumnModel().getColumn(5).setMaxWidth(60);
+        
+        show_user();
+        
+    }
+    
+   
+    private void search(String text){
+        RowFilter<DefaultTableModel, Object> sorter = null;
+        if (text.trim().length() == 0) {
+        rowSorter.setRowFilter(null);
+        } else {
+        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+        }
+    }
+    
+    private void layeredPanel1(){
+        jlayeredPanel.removeAll();
+        jlayeredPanel.add(panelSatu);
+        jlayeredPanel.repaint();
+        jlayeredPanel.revalidate();
+    }
+    private void layeredPanel2(){
+        jlayeredPanel.removeAll();
+        jlayeredPanel.add(jPanel2);
+        jlayeredPanel.repaint();
+        jlayeredPanel.revalidate();
+    }
+
+    
+    private void inputUser() throws ParseException{
+        String nama = txtUsername.getText();
+        String alamat = txtAlamat.getText();
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        String role;
+        if(comboRole.getSelectedIndex() == 0)
+            role = "Admin";
+        else
+            role = "Petugas";
+        
+        Date d  =new Date();
+        String dd = sdf.format(d);
+        
+        User usr = new User(1, nama, alamat, username, password, role, dd);
+        
+        try{
+            if(koneksi.inputUser(usr)){
+                JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
+                resetForm();
+                show_user();
+            }else{
+                JOptionPane.showMessageDialog(this, "Gagal!");
+            }
+        }catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Exception: " + ex.getMessage());
+        }
+   
+    }
+    
+    private void resetForm(){
+        txtNama.setText(null);
+        txtUsername.setText(null);
+        txtPassword.setText(null);
+        txtAlamat.setText(null);
+        labelID.setVisible(false);
+        txtID.setVisible(false);
+        separatorID.setVisible(false);
+        comboRole.setSelectedIndex(0);
+    }
+    
+    public Boolean tidakKosong(){
+        return !(txtNama.getText().equals("") || txtUsername.getText().equals("") || txtPassword.getText().equals(""));
+    }
+    
+    private void show_user() throws ParseException{
+        
+        model.setRowCount(0);
+        try {
+            ArrayList<User> user = koneksi.getUser();
+            
+            for(User u : user){
+                model.addRow(new Object[]{
+                u.getId(),
+                u.getNama(),
+                u.getAlamat(),
+                u.getUsername(),
+                u.getPassword(),
+                u.getRole(),
+                u.getTgl_pendaftaran()
+                });
+                
+            }
+   
+            
+        } catch (SQLException e) {
+           JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
+    /**
+     * Creates new form DataUserJFrame
+     */
+    public DataUserJFrame() throws ParseException {
+        initComponents();
+        
+        createTable();
+        resetForm();
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        panelLuar = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabelUser = new javax.swing.JTable();
+        separatorNama = new javax.swing.JSeparator();
+        separatorPassword = new javax.swing.JSeparator();
+        labelPassword = new javax.swing.JLabel();
+        labelNama = new javax.swing.JLabel();
+        txtNama = new javax.swing.JTextField();
+        txtUsername = new javax.swing.JTextField();
+        labelUsername = new javax.swing.JLabel();
+        separatorUsername = new javax.swing.JSeparator();
+        labelRole = new javax.swing.JLabel();
+        txtAlamat = new javax.swing.JTextField();
+        separatorAlamat = new javax.swing.JSeparator();
+        labelAlamat = new javax.swing.JLabel();
+        separatorRole = new javax.swing.JSeparator();
+        comboRole = new javax.swing.JComboBox<>();
+        separatorSearch = new javax.swing.JSeparator();
+        txtSearch = new javax.swing.JTextField();
+        labelSearch = new javax.swing.JLabel();
+        labelPage = new javax.swing.JLabel();
+        labelClear = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JTextField();
+        separatorID = new javax.swing.JSeparator();
+        txtID = new javax.swing.JTextField();
+        labelID = new javax.swing.JLabel();
+        jlayeredPanel = new javax.swing.JLayeredPane();
+        panelSatu = new javax.swing.JPanel();
+        btnLogin = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        btnUpdate = new javax.swing.JButton();
+        btnreset2 = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Data User");
+
+        panelLuar.setBackground(new java.awt.Color(28, 42, 57));
+        panelLuar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelLuarMouseClicked(evt);
+            }
+        });
+
+        tabelUser.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        tabelUser.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tabelUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelUserMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabelUser);
+
+        labelPassword.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelPassword.setForeground(new java.awt.Color(255, 255, 255));
+        labelPassword.setText("Password");
+
+        labelNama.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelNama.setForeground(new java.awt.Color(255, 255, 255));
+        labelNama.setText("Nama");
+
+        txtNama.setBackground(new java.awt.Color(28, 42, 57));
+        txtNama.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtNama.setForeground(new java.awt.Color(255, 255, 255));
+        txtNama.setBorder(null);
+        txtNama.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtNama.setMinimumSize(new java.awt.Dimension(1, 30));
+        txtNama.setPreferredSize(new java.awt.Dimension(1, 30));
+        txtNama.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNamaActionPerformed(evt);
+            }
+        });
+        txtNama.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtNamaKeyPressed(evt);
+            }
+        });
+
+        txtUsername.setBackground(new java.awt.Color(28, 42, 57));
+        txtUsername.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtUsername.setForeground(new java.awt.Color(255, 255, 255));
+        txtUsername.setBorder(null);
+        txtUsername.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtUsername.setMinimumSize(new java.awt.Dimension(1, 30));
+        txtUsername.setPreferredSize(new java.awt.Dimension(1, 30));
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsernameActionPerformed(evt);
+            }
+        });
+        txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtUsernameKeyPressed(evt);
+            }
+        });
+
+        labelUsername.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelUsername.setForeground(new java.awt.Color(255, 255, 255));
+        labelUsername.setText("Username");
+
+        labelRole.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelRole.setForeground(new java.awt.Color(255, 255, 255));
+        labelRole.setText("Role");
+
+        txtAlamat.setBackground(new java.awt.Color(28, 42, 57));
+        txtAlamat.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtAlamat.setForeground(new java.awt.Color(255, 255, 255));
+        txtAlamat.setBorder(null);
+        txtAlamat.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtAlamat.setMinimumSize(new java.awt.Dimension(1, 30));
+        txtAlamat.setPreferredSize(new java.awt.Dimension(1, 30));
+        txtAlamat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAlamatActionPerformed(evt);
+            }
+        });
+        txtAlamat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAlamatKeyPressed(evt);
+            }
+        });
+
+        labelAlamat.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelAlamat.setForeground(new java.awt.Color(255, 255, 255));
+        labelAlamat.setText("Alamat");
+
+        comboRole.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        comboRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "Petugas" }));
+        comboRole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboRoleActionPerformed(evt);
+            }
+        });
+        comboRole.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                comboRoleKeyPressed(evt);
+            }
+        });
+
+        txtSearch.setBackground(new java.awt.Color(28, 42, 57));
+        txtSearch.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtSearch.setForeground(new java.awt.Color(255, 255, 255));
+        txtSearch.setBorder(null);
+        txtSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtSearch.setMinimumSize(new java.awt.Dimension(1, 30));
+        txtSearch.setPreferredSize(new java.awt.Dimension(1, 30));
+        txtSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSearchActionPerformed(evt);
+            }
+        });
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSearchKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchKeyReleased(evt);
+            }
+        });
+
+        labelSearch.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelSearch.setForeground(new java.awt.Color(255, 255, 255));
+        labelSearch.setText("Search");
+
+        labelPage.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
+        labelPage.setForeground(new java.awt.Color(255, 255, 255));
+        labelPage.setText("DATA USER");
+
+        labelClear.setBackground(new java.awt.Color(28, 42, 57));
+        labelClear.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        labelClear.setForeground(new java.awt.Color(255, 255, 255));
+        labelClear.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelClear.setText("X");
+        labelClear.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        labelClear.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                labelClearMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                labelClearMouseEntered(evt);
+            }
+        });
+
+        txtPassword.setBackground(new java.awt.Color(28, 42, 57));
+        txtPassword.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtPassword.setForeground(new java.awt.Color(255, 255, 255));
+        txtPassword.setBorder(null);
+        txtPassword.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtPassword.setMinimumSize(new java.awt.Dimension(1, 30));
+        txtPassword.setPreferredSize(new java.awt.Dimension(1, 30));
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
+        txtPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtPasswordKeyPressed(evt);
+            }
+        });
+
+        txtID.setEditable(false);
+        txtID.setBackground(new java.awt.Color(28, 42, 57));
+        txtID.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtID.setForeground(new java.awt.Color(255, 255, 255));
+        txtID.setBorder(null);
+        txtID.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        txtID.setMinimumSize(new java.awt.Dimension(1, 30));
+        txtID.setPreferredSize(new java.awt.Dimension(1, 30));
+        txtID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIDActionPerformed(evt);
+            }
+        });
+        txtID.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtIDKeyPressed(evt);
+            }
+        });
+
+        labelID.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        labelID.setForeground(new java.awt.Color(255, 255, 255));
+        labelID.setText("ID");
+        labelID.setEnabled(false);
+
+        jlayeredPanel.setLayout(new java.awt.CardLayout());
+
+        panelSatu.setBackground(new java.awt.Color(28, 42, 57));
+
+        btnLogin.setBackground(new java.awt.Color(26, 177, 136));
+        btnLogin.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        btnLogin.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogin.setText("Simpan");
+        btnLogin.setBorder(null);
+        btnLogin.setContentAreaFilled(false);
+        btnLogin.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnLogin.setOpaque(true);
+        btnLogin.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnLoginMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnLoginMouseExited(evt);
+            }
+        });
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
+
+        btnReset.setBackground(new java.awt.Color(204, 153, 0));
+        btnReset.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setText("Reset");
+        btnReset.setBorder(null);
+        btnReset.setContentAreaFilled(false);
+        btnReset.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnReset.setOpaque(true);
+        btnReset.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnResetMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnResetMouseExited(evt);
+            }
+        });
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelSatuLayout = new javax.swing.GroupLayout(panelSatu);
+        panelSatu.setLayout(panelSatuLayout);
+        panelSatuLayout.setHorizontalGroup(
+            panelSatuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSatuLayout.createSequentialGroup()
+                .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 198, Short.MAX_VALUE))
+        );
+        panelSatuLayout.setVerticalGroup(
+            panelSatuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelSatuLayout.createSequentialGroup()
+                .addGroup(panelSatuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 21, Short.MAX_VALUE))
+        );
+
+        jlayeredPanel.add(panelSatu, "card2");
+
+        jPanel2.setBackground(new java.awt.Color(28, 42, 57));
+
+        btnUpdate.setBackground(new java.awt.Color(0, 51, 102));
+        btnUpdate.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Update");
+        btnUpdate.setBorder(null);
+        btnUpdate.setContentAreaFilled(false);
+        btnUpdate.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnUpdate.setOpaque(true);
+        btnUpdate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnUpdateMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnUpdateMouseExited(evt);
+            }
+        });
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnreset2.setBackground(new java.awt.Color(204, 153, 0));
+        btnreset2.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        btnreset2.setForeground(new java.awt.Color(255, 255, 255));
+        btnreset2.setText("Reset");
+        btnreset2.setBorder(null);
+        btnreset2.setContentAreaFilled(false);
+        btnreset2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnreset2.setOpaque(true);
+        btnreset2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnreset2MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnreset2MouseExited(evt);
+            }
+        });
+        btnreset2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnreset2ActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setBackground(new java.awt.Color(255, 26, 26));
+        btnDelete.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete.setText("Delete");
+        btnDelete.setBorder(null);
+        btnDelete.setContentAreaFilled(false);
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.setOpaque(true);
+        btnDelete.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnDeleteMouseExited(evt);
+            }
+        });
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnreset2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 61, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnreset2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 21, Short.MAX_VALUE))
+        );
+
+        jlayeredPanel.add(jPanel2, "card3");
+
+        btnBack.setBackground(new java.awt.Color(0, 159, 201));
+        btnBack.setFont(new java.awt.Font("Century Gothic", 0, 16)); // NOI18N
+        btnBack.setForeground(new java.awt.Color(255, 255, 255));
+        btnBack.setText("Back");
+        btnBack.setBorder(null);
+        btnBack.setContentAreaFilled(false);
+        btnBack.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnBack.setOpaque(true);
+        btnBack.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btnBackMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btnBackMouseExited(evt);
+            }
+        });
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelLuarLayout = new javax.swing.GroupLayout(panelLuar);
+        panelLuar.setLayout(panelLuarLayout);
+        panelLuarLayout.setHorizontalGroup(
+            panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLuarLayout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLuarLayout.createSequentialGroup()
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelLuarLayout.createSequentialGroup()
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jlayeredPanel, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelLuarLayout.createSequentialGroup()
+                                        .addComponent(labelPage, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(47, 47, 47))
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(labelNama, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(separatorPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                                    .addComponent(labelPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtNama, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(separatorNama, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+                                    .addComponent(labelUsername, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(separatorUsername, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(labelRole, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtAlamat, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(separatorAlamat)
+                                        .addComponent(separatorRole)
+                                        .addComponent(comboRole, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(labelAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labelID, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(separatorID, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(27, 27, 27)))
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(labelClear, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(separatorSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38))))
+        );
+        panelLuarLayout.setVerticalGroup(
+            panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLuarLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLuarLayout.createSequentialGroup()
+                        .addComponent(labelPage, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLuarLayout.createSequentialGroup()
+                        .addComponent(labelSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(labelClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(2, 2, 2)))
+                .addComponent(separatorSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLuarLayout.createSequentialGroup()
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addComponent(labelNama)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNama, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(separatorNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addComponent(labelAlamat)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(separatorAlamat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(27, 27, 27)
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labelUsername)
+                            .addComponent(labelRole))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(separatorRole)
+                            .addComponent(separatorUsername))
+                        .addGap(32, 32, 32)
+                        .addGroup(panelLuarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addComponent(labelPassword)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(separatorPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelLuarLayout.createSequentialGroup()
+                                .addComponent(labelID, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(separatorID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jlayeredPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105)
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(272, 272, 272))
+                    .addGroup(panelLuarLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(339, 339, 339))))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelLuar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelLuar, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void txtNamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNamaActionPerformed
+
+    private void txtNamaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNamaKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()== KeyEvent.VK_DOWN){
+            txtUsername.requestFocus();
+        }
+    }//GEN-LAST:event_txtNamaKeyPressed
+
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsernameActionPerformed
+
+    private void txtUsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()== KeyEvent.VK_DOWN){
+            txtPassword.requestFocus();
+        }else if(evt.getKeyCode()== KeyEvent.VK_UP){
+            txtNama.requestFocus();
+        }
+    }//GEN-LAST:event_txtUsernameKeyPressed
+
+    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchActionPerformed
+
+    private void txtSearchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSearchKeyPressed
+
+    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
+        // TODO add your handling code here:
+        String text = txtSearch.getText();
+      
+        search(text);
+    }//GEN-LAST:event_txtSearchKeyReleased
+
+    private void labelClearMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelClearMouseEntered
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_labelClearMouseEntered
+
+    private void panelLuarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLuarMouseClicked
+        // TODO add your handling code here:
+        tabelUser.clearSelection();
+    }//GEN-LAST:event_panelLuarMouseClicked
+
+    private void tabelUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelUserMouseClicked
+        // TODO add your handling code here:
+        
+        labelID.setVisible(true);
+        txtID.setVisible(true);
+        separatorID.setVisible(true);
+        int select = tabelUser.getSelectedRow();
+        
+        String id = tabelUser.getValueAt(select, 0).toString();
+        txtID.setText(id);
+
+        String nama = tabelUser.getValueAt(select, 1).toString();
+        txtNama.setText(nama);
+
+        String alamat = tabelUser.getValueAt(select, 2).toString();
+        txtAlamat.setText(alamat);
+
+        String username = tabelUser.getValueAt(select, 3).toString();
+        txtUsername.setText(username);
+
+        String password = tabelUser.getValueAt(select, 4).toString();
+        txtPassword.setText(password);
+
+        String role = tabelUser.getValueAt(select, 5).toString();
+
+        if(role.equals("Admin"))
+        comboRole.setSelectedIndex(0);
+        else
+        comboRole.setSelectedIndex(1);
+        
+        layeredPanel2();
+      
+    }//GEN-LAST:event_tabelUserMouseClicked
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void txtPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPasswordKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()== KeyEvent.VK_UP){
+            txtUsername.requestFocus();
+        }
+    }//GEN-LAST:event_txtPasswordKeyPressed
+
+    private void txtIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIDActionPerformed
+
+    private void txtIDKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIDKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIDKeyPressed
+
+    private void labelClearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labelClearMouseClicked
+        // TODO add your handling code here:
+        txtSearch.setText("");
+        search("");
+
+    }//GEN-LAST:event_labelClearMouseClicked
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+
+        int select = tabelUser.getSelectedRow();
+        String nama = tabelUser.getValueAt(select, 1).toString();
+        int opsi = JOptionPane.showConfirmDialog(null, "Hapus " +nama+ "?", "Alert!",JOptionPane.YES_NO_CANCEL_OPTION);
+
+        if(opsi== JOptionPane.YES_OPTION){
+
+            String id = tabelUser.getValueAt(select, 0).toString();
+            int idInt = Integer.parseInt(id);
+            try{
+
+                if(koneksi.deleteUser(idInt)){
+                    JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
+                    show_user();
+                    resetForm();
+                    layeredPanel1();
+                }else {
+                    JOptionPane.showMessageDialog(null, "Gagal Delete");
+                }
+
+            }catch(HeadlessException | SQLException e){
+                JOptionPane.showMessageDialog(this, e.getMessage());
+            } catch (ParseException ex) {
+                Logger.getLogger(DataUserJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnDeleteMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteMouseExited
+
+    private void btnDeleteMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteMouseEntered
+
+    private void btnreset2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnreset2ActionPerformed
+        // TODO add your handling code here:
+        resetForm();
+        layeredPanel1();
+
+    }//GEN-LAST:event_btnreset2ActionPerformed
+
+    private void btnreset2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnreset2MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnreset2MouseExited
+
+    private void btnreset2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnreset2MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnreset2MouseEntered
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        int select = tabelUser.getSelectedRow();
+
+        String tglString = tabelUser.getValueAt(select, 6).toString();
+
+        int kode = Integer.parseInt(txtID.getText());
+
+        String nama = txtNama.getText();
+
+        String alamat = txtAlamat.getText();
+
+        String username = txtUsername.getText();
+
+        String password = txtPassword.getText();
+
+        int index = comboRole.getSelectedIndex();
+        String role;
+        if(index==0){
+            role = "Admin";
+        }else
+        role = "Petugas";
+
+        Date d  =new Date();
+
+        String tgl = sdf.format(d);
+        User u = new User(kode, nama, alamat, username, password, role, tgl);
+
+        try{
+            if(koneksi.updateUser(u))
+
+            JOptionPane.showMessageDialog(null, "Data Berhasil Diupdate");
+            show_user();
+            resetForm();
+            layeredPanel1();
+
+        }catch(HeadlessException | SQLException e){
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        } catch (ParseException ex) {
+            Logger.getLogger(DataUserJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnUpdateMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUpdateMouseExited
+
+    private void btnUpdateMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnUpdateMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnUpdateMouseEntered
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        // TODO add your handling code here:
+        resetForm();
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void btnResetMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnResetMouseExited
+
+    private void btnResetMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnResetMouseEntered
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        // TODO add your handling code here:
+        if(tidakKosong()){
+            try {
+                inputUser();
+            } catch (ParseException ex) {
+                Logger.getLogger(DataUserJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Harap Lengkapi Data!","Error" , JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnLoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseExited
+        // TODO add your handling code here:
+        btnLogin.setBackground(new Color(26,177,136));
+    }//GEN-LAST:event_btnLoginMouseExited
+
+    private void btnLoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoginMouseEntered
+        // TODO add your handling code here:
+        btnLogin.setBackground(new Color(23,152,118));
+    }//GEN-LAST:event_btnLoginMouseEntered
+
+    private void comboRoleKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_comboRoleKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()== KeyEvent.VK_LEFT){
+            txtUsername.requestFocus();
+        }
+    }//GEN-LAST:event_comboRoleKeyPressed
+
+    private void comboRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboRoleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboRoleActionPerformed
+
+    private void txtAlamatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAlamatKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()== KeyEvent.VK_DOWN){
+            comboRole.requestFocus();
+        }
+    }//GEN-LAST:event_txtAlamatKeyPressed
+
+    private void txtAlamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAlamatActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAlamatActionPerformed
+
+    private void btnBackMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackMouseEntered
+
+    private void btnBackMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBackMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBackMouseExited
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        MenuJFrame menu = new MenuJFrame();
+        menu.setVisible(true);
+        menu.pack();
+        menu.setDefaultCloseOperation(MenuJFrame.DISPOSE_ON_CLOSE);
+        dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(DataUserJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(DataUserJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(DataUserJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(DataUserJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    new DataUserJFrame().setVisible(true);
+                } catch (ParseException ex) {
+                    Logger.getLogger(DataUserJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton btnreset2;
+    private javax.swing.JComboBox<String> comboRole;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLayeredPane jlayeredPanel;
+    private javax.swing.JLabel labelAlamat;
+    private javax.swing.JLabel labelClear;
+    private javax.swing.JLabel labelID;
+    private javax.swing.JLabel labelNama;
+    private javax.swing.JLabel labelPage;
+    private javax.swing.JLabel labelPassword;
+    private javax.swing.JLabel labelRole;
+    private javax.swing.JLabel labelSearch;
+    private javax.swing.JLabel labelUsername;
+    private javax.swing.JPanel panelLuar;
+    private javax.swing.JPanel panelSatu;
+    private javax.swing.JSeparator separatorAlamat;
+    private javax.swing.JSeparator separatorID;
+    private javax.swing.JSeparator separatorNama;
+    private javax.swing.JSeparator separatorPassword;
+    private javax.swing.JSeparator separatorRole;
+    private javax.swing.JSeparator separatorSearch;
+    private javax.swing.JSeparator separatorUsername;
+    private javax.swing.JTable tabelUser;
+    private javax.swing.JTextField txtAlamat;
+    private javax.swing.JTextField txtID;
+    private javax.swing.JTextField txtNama;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtUsername;
+    // End of variables declaration//GEN-END:variables
+}
